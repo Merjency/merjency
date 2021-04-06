@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.subham.merjency.database.HospitalRepository;
 import org.subham.merjency.database.UserRepository;
 import org.subham.merjency.model.DistanceUnit;
+import org.subham.merjency.model.DistanceUtil;
 import org.subham.merjency.model.GeoLocation;
 import org.subham.merjency.model.HospitalDetails;
 import org.subham.merjency.model.UserDetails;
@@ -27,40 +30,33 @@ public class CrudController {
 
 	@Autowired
 	private HospitalRepository hospitalDb; // simple array-list
-	
+
 	@GetMapping("/")
 	public String test() {
 		return "Hello";
 	}
-	
+
 	@PostMapping("/register/user")
-	public ResponseEntity<?> registerUser(@RequestBody UserDetails details) {
+	public ResponseEntity<?> registerUser(@RequestBody @Valid UserDetails details) {
 		userDb.add(details);
 		return ResponseEntity.ok("Done");
 	}
 
 	@PostMapping("/register/hospital")
-	public ResponseEntity<?> registerHospital(@RequestBody HospitalDetails hospitalDetails) {
+	public ResponseEntity<?> registerHospital(@RequestBody @Valid HospitalDetails hospitalDetails) {
 		hospitalDb.add(hospitalDetails);
 		return ResponseEntity.ok("Done");
 	}
 
 	@GetMapping("/user/{userName}/get-hospital-list")
 	public strictfp ResponseEntity<?> getHospitalListForUserName(@PathVariable String userName,
-			@RequestBody GeoLocation userLocation) {
-
-		// Validation
-		// check if userName is in our database or not??? [y/n]
+			@RequestBody @Valid GeoLocation userLocation) {
 
 		ArrayList<HospitalDetails> list = hospitalDb.getDetails();
 		TreeMap<Double, HospitalDetails> sortedMap = new TreeMap<>();
 
-		// NOT-implemented
-		// Prepare a min-heap of size K
-		// by default k = 5;
-
 		for (var hospitalDetails : list) {
-			Map<DistanceUnit, Double> matrix = hospitalDetails.getLocation().getDistance(userLocation);
+			Map<DistanceUnit, Double> matrix = DistanceUtil.getDistance(userLocation, hospitalDetails.getLocation());
 			sortedMap.put(matrix.get(DistanceUnit.IN_KM), hospitalDetails);
 		}
 

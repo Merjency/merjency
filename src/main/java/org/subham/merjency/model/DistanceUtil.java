@@ -7,11 +7,11 @@ public class DistanceUtil {
 	public static final double EARTH_RADIUS_KM = 6371.0;
 	public static final double KM_TO_MILE_COEFFICENT = 0.621371;
 
-	public strictfp Map<DistanceUnit, Double> getDistance(GeoLocation from, GeoLocation to) {
+	public static strictfp Map<DistanceUnit, Double> getDistance(GeoLocation from, GeoLocation to) {
 		Map<DistanceUnit, Double> result = new HashMap<>();
 
 		double distanceInKM = getDistanceInKM(from, to);
-		double distanceInMile = distanceConverterKMtoMile(distanceInKM);
+		double distanceInMile = convertKMtoMile(distanceInKM);
 
 		result.put(DistanceUnit.IN_KM, distanceInKM);
 		result.put(DistanceUnit.IN_MILE, distanceInMile);
@@ -33,7 +33,7 @@ public class DistanceUtil {
 		return EARTH_RADIUS_KM * c;
 	}
 
-	public static strictfp double distanceConverterKMtoMile(double distanceInKM) {
+	public static strictfp double convertKMtoMile(double distanceInKM) {
 		return distanceInKM * KM_TO_MILE_COEFFICENT;
 	}
 }
