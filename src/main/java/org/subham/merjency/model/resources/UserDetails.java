@@ -1,8 +1,10 @@
-package org.subham.merjency.model;
+package org.subham.merjency.model.resources;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
+import org.subham.merjency.model.Gender;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

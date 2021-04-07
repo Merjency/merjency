@@ -1,12 +1,11 @@
 package org.subham.merjency.controller;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,22 +13,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.subham.merjency.database.HospitalRepository;
+import org.subham.merjency.dataaccess.DataAccessMethodResponse;
+import org.subham.merjency.dataaccess.HospitalDataAccess;
+import org.subham.merjency.dataaccess.OrderingParam;
 import org.subham.merjency.database.UserRepository;
-import org.subham.merjency.model.DistanceUnit;
-import org.subham.merjency.model.DistanceUtil;
 import org.subham.merjency.model.GeoLocation;
-import org.subham.merjency.model.HospitalDetails;
-import org.subham.merjency.model.UserDetails;
+import org.subham.merjency.model.resources.HospitalDetails;
+import org.subham.merjency.model.resources.UserDetails;
 
 @RestController
 @RequestMapping("/api")
 public class CrudController {
 	@Autowired
-	private UserRepository userDb; // Map <userName, details>
+	private HospitalDataAccess hospitalDataAccess;
 
 	@Autowired
-	private HospitalRepository hospitalDb; // simple array-list
+	private UserRepository userDb; // Map <userName, details>
 
 	@GetMapping("/")
 	public String test() {
@@ -44,22 +43,19 @@ public class CrudController {
 
 	@PostMapping("/register/hospital")
 	public ResponseEntity<?> registerHospital(@RequestBody @Valid HospitalDetails hospitalDetails) {
-		hospitalDb.add(hospitalDetails);
-		return ResponseEntity.ok("Done");
+		DataAccessMethodResponse accessMethodResponse = hospitalDataAccess.store(hospitalDetails);
+		if (accessMethodResponse.equals(DataAccessMethodResponse.VALID_RESOURCE_INSERTION)) {
+			return ResponseEntity.ok("Done");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
+		}
 	}
 
 	@GetMapping("/user/{userName}/get-hospital-list")
-	public strictfp ResponseEntity<?> getHospitalListForUserName(@PathVariable String userName,
+	public strictfp ResponseEntity<ArrayList<HospitalDetails>> getHospitalListForUserName(@PathVariable String userName,
 			@RequestBody @Valid GeoLocation userLocation) {
 
-		ArrayList<HospitalDetails> list = hospitalDb.getDetails();
-		TreeMap<Double, HospitalDetails> sortedMap = new TreeMap<>();
-
-		for (var hospitalDetails : list) {
-			Map<DistanceUnit, Double> matrix = DistanceUtil.getDistance(userLocation, hospitalDetails.getLocation());
-			sortedMap.put(matrix.get(DistanceUnit.IN_KM), hospitalDetails);
-		}
-
-		return ResponseEntity.ok(sortedMap.values());
+		ArrayList<HospitalDetails> arrayList = hospitalDataAccess.getList(userLocation, OrderingParam.GPS_LOCATION);
+		return ResponseEntity.ok(arrayList);
 	}
 }

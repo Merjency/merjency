@@ -3,7 +3,7 @@ package org.subham.merjency.database;
 import java.util.ArrayList;
 
 import org.springframework.stereotype.Component;
-import org.subham.merjency.model.HospitalDetails;
+import org.subham.merjency.model.resources.HospitalDetails;
 
 @Component
 public class HospitalRepository {
@@ -14,6 +14,6 @@ public class HospitalRepository {
 	}
 	
 	public ArrayList<HospitalDetails> getDetails() {
-		return new ArrayList<>(list);
+		return list;
 	}
 }

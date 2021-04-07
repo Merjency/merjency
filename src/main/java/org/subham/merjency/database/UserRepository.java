@@ -2,9 +2,10 @@ package org.subham.merjency.database;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
-import org.subham.merjency.model.UserDetails;
+import org.subham.merjency.model.resources.UserDetails;
 
 @Component
 public class UserRepository {
@@ -14,8 +15,8 @@ public class UserRepository {
 		userDetails.put(details.getUserName(), details);
 	}
 	
-	public UserDetails getByUserName(String userName) {
-		return userDetails.get(userName);
+	public Optional<UserDetails> findByUserName(String userName) {
+		return Optional.of(userDetails.get(userName));
 	}
 	
 }
