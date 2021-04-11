@@ -20,7 +20,6 @@ import org.subham.merjency.model.GeoLocation;
 import org.subham.merjency.model.resources.HospitalDetails;
 import org.subham.merjency.model.resources.UserDetails;
 
-
 /**
  * @author Subham Santra
  *
@@ -28,6 +27,9 @@ import org.subham.merjency.model.resources.UserDetails;
 @RestController
 @RequestMapping("/api")
 public class CrudController {
+//	private final DecimalFormat FAR_FORMATTER = new DecimalFormat("#");
+	private final DecimalFormat MID_FORMATTER = new DecimalFormat("#.#");
+//	private final DecimalFormat CLOSE_FORMATTER = new DecimalFormat("#.##");
 
 	@Autowired
 	private HospitalDetailsRepository hospitalDetailsRepository;
@@ -78,14 +80,10 @@ public class CrudController {
 
 	@GetMapping("/users/{userName}/hospitalList/sortByLocation={latt},{longg}")
 	public SortedMap<Double, HospitalDetails> getSortedHospitalListByLocation(@PathVariable String userName,
-			@PathVariable Double latt, @PathVariable Double longg) {
+			@PathVariable Double latt, @PathVariable Double longg, @PathVariable String circular_limit) {
 
-		// Rounding off up to 1 decimal places
-		// To scale 11.11 KM a circular measure;
-		
-		DecimalFormat decimalFormat = new DecimalFormat("#.#");
-		latt  = Double.parseDouble(decimalFormat.format(latt));
-		longg = Double.parseDouble(decimalFormat.format(longg));
+		latt = Double.parseDouble(MID_FORMATTER.format(latt));
+		longg = Double.parseDouble(MID_FORMATTER.format(longg));
 
 		return hospitalDataAccess.getHospitalListSortOnActualDistance(new GeoLocation(latt, longg));
 	}
