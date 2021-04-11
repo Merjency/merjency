@@ -1,61 +1,92 @@
 package org.subham.merjency.controller;
 
-import java.util.ArrayList;
-
-import javax.validation.Valid;
+import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Optional;
+import java.util.SortedMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.subham.merjency.dataaccess.DataAccessMethodResponse;
-import org.subham.merjency.dataaccess.HospitalDataAccess;
-import org.subham.merjency.dataaccess.OrderingParam;
-import org.subham.merjency.database.UserRepository;
+import org.subham.merjency.businesslogic.HospitalDataAccess;
+import org.subham.merjency.database.HospitalDetailsRepository;
+import org.subham.merjency.database.UserDetailsRepository;
 import org.subham.merjency.model.GeoLocation;
 import org.subham.merjency.model.resources.HospitalDetails;
 import org.subham.merjency.model.resources.UserDetails;
 
+
+/**
+ * @author Subham Santra
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class CrudController {
+
 	@Autowired
+	private HospitalDetailsRepository hospitalDetailsRepository;
+
+	@Autowired
+	private UserDetailsRepository userDetailsRepository;
+
 	private HospitalDataAccess hospitalDataAccess;
 
-	@Autowired
-	private UserRepository userDb; // Map <userName, details>
-
-	@GetMapping("/")
-	public String test() {
-		return "Hello";
+	@GetMapping("/test")
+	public String testApi() {
+		return "WELCOME TO OUR MERJENCY SERVICES";
 	}
 
-	@PostMapping("/register/user")
-	public ResponseEntity<?> registerUser(@RequestBody UserDetails details) {
-		userDb.add(details);
-		return ResponseEntity.ok("Done");
+	@GetMapping("/hospitals")
+	public List<HospitalDetails> getHospitals() {
+		return hospitalDetailsRepository.findAll();
 	}
 
-	@PostMapping("/register/hospital")
-	public ResponseEntity<?> registerHospital(@RequestBody HospitalDetails hospitalDetails) {
-		DataAccessMethodResponse accessMethodResponse = hospitalDataAccess.store(hospitalDetails);
-		if (accessMethodResponse.equals(DataAccessMethodResponse.VALID_RESOURCE_INSERTION)) {
-			return ResponseEntity.ok("Done");
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).build();
-		}
+	@PostMapping("/hospitals/registration")
+	public HospitalDetails hospitalRegistration(@RequestBody HospitalDetails hospitalDetails) {
+		HospitalDetails savedDetails = hospitalDetailsRepository.save(hospitalDetails);
+		return savedDetails;
 	}
 
-	@GetMapping("/user/{userName}/get-hospital-list")
-	public strictfp ResponseEntity<ArrayList<HospitalDetails>> getHospitalListForUserName(@PathVariable String userName,
-			@RequestBody @Valid GeoLocation userLocation) {
+	@PutMapping("/hospital/{id}")
+	public HospitalDetails updateHospitalDetails(@RequestBody HospitalDetails hospitalDetails) {
+		return hospitalDetailsRepository.save(hospitalDetails);
+	}
 
-		ArrayList<HospitalDetails> arrayList = hospitalDataAccess.getList(userLocation, OrderingParam.GPS_LOCATION);
-		return ResponseEntity.ok(arrayList);
+	@PostMapping("/users/registration")
+	public UserDetails userRegistration(@RequestBody UserDetails userDetails) {
+		UserDetails savedDetails = userDetailsRepository.save(userDetails);
+		return savedDetails;
+	}
+
+	@GetMapping("/users/{userName}")
+	public Optional<UserDetails> getUserDetails(@PathVariable String userName) {
+		Optional<UserDetails> foundById = userDetailsRepository.findById(userName);
+		return foundById;
+	}
+
+	@GetMapping("/users/{userName}/hospitalList/sortByZipCode={zipCode}")
+	public List<HospitalDetails> getSortedHospitalListByZipCode(@PathVariable String userName,
+			@PathVariable String zipCode) {
+		return hospitalDetailsRepository.findByZipCode(zipCode);
+	}
+
+	@GetMapping("/users/{userName}/hospitalList/sortByLocation={latt},{longg}")
+	public SortedMap<Double, HospitalDetails> getSortedHospitalListByLocation(@PathVariable String userName,
+			@PathVariable Double latt, @PathVariable Double longg) {
+
+		// Rounding off up to 1 decimal places
+		// To scale 11.11 KM a circular measure;
+		
+		DecimalFormat decimalFormat = new DecimalFormat("#.#");
+		latt  = Double.parseDouble(decimalFormat.format(latt));
+		longg = Double.parseDouble(decimalFormat.format(longg));
+
+		return hospitalDataAccess.getHospitalListSortOnActualDistance(new GeoLocation(latt, longg));
 	}
 }

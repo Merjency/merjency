@@ -1,7 +1,11 @@
 package org.subham.merjency.model.resources;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.persistence.Id;
 
 import org.subham.merjency.model.GeoLocation;
 
@@ -14,7 +18,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class HospitalDetails {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long hospitalId;
 
 	@NotBlank
 	private String name;
@@ -35,7 +44,6 @@ public class HospitalDetails {
 	private String phoneNumber1;
 	private String phoneNumber2;
 	private String phoneNumber3;
-	
-	@NotBlank(message = "please provide location")
+
 	private GeoLocation location;
 }

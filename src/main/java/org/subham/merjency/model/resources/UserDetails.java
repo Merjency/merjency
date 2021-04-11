@@ -1,5 +1,7 @@
 package org.subham.merjency.model.resources;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -15,10 +17,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class UserDetails {
 
 	@Pattern(regexp = "[a-zA-Z_]{5}")
 	@NotBlank
+	@Id
 	private String userName;
 	@NotBlank
 	private String firstName;

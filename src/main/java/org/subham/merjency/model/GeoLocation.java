@@ -1,5 +1,6 @@
 package org.subham.merjency.model;
 
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
+@Embeddable
 public class GeoLocation {
 	@NotBlank(message = "lattitude is invalid")
 	private double lattitude;
