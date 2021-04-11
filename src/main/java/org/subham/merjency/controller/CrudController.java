@@ -36,13 +36,13 @@ public class CrudController {
 	}
 
 	@PostMapping("/register/user")
-	public ResponseEntity<?> registerUser(@RequestBody @Valid UserDetails details) {
+	public ResponseEntity<?> registerUser(@RequestBody UserDetails details) {
 		userDb.add(details);
 		return ResponseEntity.ok("Done");
 	}
 
 	@PostMapping("/register/hospital")
-	public ResponseEntity<?> registerHospital(@RequestBody @Valid HospitalDetails hospitalDetails) {
+	public ResponseEntity<?> registerHospital(@RequestBody HospitalDetails hospitalDetails) {
 		DataAccessMethodResponse accessMethodResponse = hospitalDataAccess.store(hospitalDetails);
 		if (accessMethodResponse.equals(DataAccessMethodResponse.VALID_RESOURCE_INSERTION)) {
 			return ResponseEntity.ok("Done");

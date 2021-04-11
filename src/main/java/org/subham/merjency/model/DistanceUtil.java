@@ -3,6 +3,7 @@ package org.subham.merjency.model;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class DistanceUtil {
 	public static final double EARTH_RADIUS_KM = 6371.0;
 	public static final double KM_TO_MILE_COEFFICENT = 0.621371;
