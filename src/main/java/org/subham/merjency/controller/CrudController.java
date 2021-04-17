@@ -24,12 +24,16 @@ import org.subham.merjency.model.resources.UserDetails;
  * @author Subham Santra
  *
  */
+/**
+ * @author Admin
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class CrudController {
-//	private final DecimalFormat FAR_FORMATTER = new DecimalFormat("#");
-	private final DecimalFormat MID_FORMATTER = new DecimalFormat("#.#");
-//	private final DecimalFormat CLOSE_FORMATTER = new DecimalFormat("#.##");
+//	private final DecimalFormat FAR_FORMATTER = new DecimalFormat("#"); 		// 111.111111111 Km
+	private final DecimalFormat MID_FORMATTER = new DecimalFormat("#.#");		// 11.1111111111 KM
+//	private final DecimalFormat CLOSE_FORMATTER = new DecimalFormat("#.##");	// 1.11111111 KM
 
 	@Autowired
 	private HospitalDetailsRepository hospitalDetailsRepository;
@@ -37,7 +41,8 @@ public class CrudController {
 	@Autowired
 	private UserDetailsRepository userDetailsRepository;
 
-	private HospitalDataAccess hospitalDataAccess;
+	@Autowired
+	private HospitalDataAccess hospitalDataAccess = new HospitalDataAccess();
 
 	@GetMapping("/test")
 	public String testApi() {
@@ -80,11 +85,13 @@ public class CrudController {
 
 	@GetMapping("/users/{userName}/hospitalList/sortByLocation={latt},{longg}")
 	public SortedMap<Double, HospitalDetails> getSortedHospitalListByLocation(@PathVariable String userName,
-			@PathVariable Double latt, @PathVariable Double longg, @PathVariable String circular_limit) {
+			@PathVariable String latt, @PathVariable String longg) {
 
-		latt = Double.parseDouble(MID_FORMATTER.format(latt));
-		longg = Double.parseDouble(MID_FORMATTER.format(longg));
+		// CLevel => {'far', 'mid', 'close'}
+		// lowerBound
+		Double latitude = Double.parseDouble(MID_FORMATTER.format(Double.parseDouble(latt)));
+		Double longitude = Double.parseDouble(MID_FORMATTER.format(Double.parseDouble(longg)));
 
-		return hospitalDataAccess.getHospitalListSortOnActualDistance(new GeoLocation(latt, longg));
+		return hospitalDataAccess.getHospitalListSortOnActualDistance(new GeoLocation(latitude, longitude));
 	}
 }
