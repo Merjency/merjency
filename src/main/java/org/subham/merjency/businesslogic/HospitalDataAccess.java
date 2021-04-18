@@ -18,18 +18,26 @@ public class HospitalDataAccess {
 
 	GenericDistanceCalculator distanceCalculator = new AerialDistanceCalculator();
 	
+	public HospitalDetails storeNewDetails(HospitalDetails hospitalDetails) {
+		HospitalDetails save = hospitalDetailsRepository.save(hospitalDetails);
+		return save;
+	}
+	
+	public List<HospitalDetails> findAll() {
+		return hospitalDetailsRepository.findAll();
+	}
+	
 	public List<HospitalDetails> getHospitalListSortOnZipCode(String zipCode) {
 		List<HospitalDetails> foundByZipCode = hospitalDetailsRepository.findByZipCode(zipCode);
 		return foundByZipCode;
 	}
-	
 	
 	public SortedMap<Double, HospitalDetails> getHospitalListSortOnActualDistance(GeoLocation geoLocation) {
 		List<HospitalDetails> foundAll = hospitalDetailsRepository.findAll();
 		SortedMap<Double, HospitalDetails> sortedMap = new TreeMap<>();
 		
 		foundAll.forEach(hospitalDetails -> {
-			double distance = distanceCalculator.getDistance(geoLocation, hospitalDetails.getLocation(), DistanceUnit.IN_KM);
+			Double distance = distanceCalculator.getDistance(geoLocation, hospitalDetails.getLocation(), DistanceUnit.IN_KM);
 			sortedMap.put(distance, hospitalDetails);
 		});
 		

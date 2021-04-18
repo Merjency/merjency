@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import org.subham.merjency.model.GeoLocation;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +20,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class HospitalDetails {
+@Builder
+public class HospitalDetails implements Resource {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
