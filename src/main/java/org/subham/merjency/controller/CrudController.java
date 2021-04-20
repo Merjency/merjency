@@ -50,8 +50,8 @@ public class CrudController {
 	}
 	
 	@GetMapping("/deploy")
-	public String testApi() {
-		return "HURRAY... CONTINUOUS INTEGRATION WORKING FINE WITH EVERY COMMIT \n \t\t DEPLOYED SUCCESSFULLY";
+	public String testDeploy() {
+		return "HURRAY... CONTINUOUS INTEGRATION WORKING FINE WITH EVERY COMMIT \n \t\t !!!! DEPLOYED SUCCESSFULLY !!!!";
 	}
 
 	@GetMapping("/get-dummy-data")
