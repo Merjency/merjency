@@ -48,4 +48,14 @@ public class HospitalDetails implements Resource {
 	private String phoneNumber3;
 
 	private GeoLocation location;
+
+	@Override
+	public String toString() {
+		return "HospitalDetails [hospitalId=" + hospitalId + ", name=" + name + ", addressLine1=" + addressLine1
+				+ ", addressLine2=" + addressLine2 + ", addressLine3=" + addressLine3 + ", zipCode=" + zipCode
+				+ ", state=" + state + ", phoneNumber1=" + phoneNumber1 + ", phoneNumber2=" + phoneNumber2
+				+ ", phoneNumber3=" + phoneNumber3 + ", location=" + location + "]";
+	}
+	
+	
 }

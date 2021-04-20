@@ -1,5 +1,7 @@
 package org.subham.merjency.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.subham.home.utility.CSVFileReader;
 import org.subham.merjency.businesslogic.HospitalDataAccess;
 import org.subham.merjency.database.HospitalDetailsRepository;
 import org.subham.merjency.database.UserDetailsRepository;
@@ -26,10 +29,6 @@ import org.subham.merjency.model.resources.UserDetails;
 
 /**
  * @author Subham Santra
- *
- */
-/**
- * @author Admin
  *
  */
 @RestController
@@ -46,6 +45,14 @@ public class CrudController {
 
 	@GetMapping("/test")
 	public String testApi() {
+		CSVFileReader csvFileReader = new CSVFileReader();
+		try {
+			List<HospitalDetails> loadFromFile = csvFileReader
+					.loadFromFile(new File("C:\\Users\\Admin\\Desktop\\hospital_details_v1.1.csv"));
+			loadFromFile.forEach(hospitalDataAccess::storeNewDetails);
+		} catch (IOException e) {
+			System.out.printf("[ERROR] -- In CRUD_CONTROLLER [testApi] [error " + e.getMessage() + "]\n");
+		}
 		return "WELCOME TO OUR MERJENCY SERVICES";
 	}
 	
