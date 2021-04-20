@@ -48,6 +48,11 @@ public class CrudController {
 	public String testApi() {
 		return "WELCOME TO OUR MERJENCY SERVICES";
 	}
+	
+	@GetMapping("/deploy")
+	public String testApi() {
+		return "HURRAY... CONTINUOUS INTEGRATION WORKING FINE WITH EVERY COMMIT \n \t\t DEPLOYED SUCCESSFULLY";
+	}
 
 	@GetMapping("/get-dummy-data")
 	public ResponseEntity<?> getDummyData() {
