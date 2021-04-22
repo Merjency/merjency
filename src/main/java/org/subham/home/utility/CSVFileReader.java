@@ -23,7 +23,7 @@ public class CSVFileReader {
 		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
 
 			String readLine;
-			for (int i = 0; i < 10; ++i) {
+			for (int i = 0; i < 20; ++i) {
 				readLine = bufferedReader.readLine();
 				if (i > 0) {
 					HospitalDetails object = getObject(i, readLine);

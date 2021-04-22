@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 import javax.persistence.Id;
 
 import org.subham.merjency.model.GeoLocation;
@@ -39,7 +38,6 @@ public class HospitalDetails implements Resource {
 	private String zipCode;
 
 	@NotBlank(message = "must have a valid state")
-	@Pattern(regexp = "[a-zA-Z[ ]]+", message = "entered state is invalid")
 	private String state;
 
 	@NotBlank(message = "ateast one phone number is needed")

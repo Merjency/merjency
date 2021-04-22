@@ -1,5 +1,6 @@
 package org.subham.merjency.model.resources;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -33,6 +34,7 @@ public class UserDetails implements Resource {
 	private String sex;
 	@NotBlank
 	@Email(message = "email id should be a valid one!!")
+	@Column(unique = true)
 	private String emailId;
 	@NotBlank
 	@Pattern(message = "Valid pin should have 5 digits [only].", regexp = "[0-9]{5}")
